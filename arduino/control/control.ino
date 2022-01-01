@@ -21,6 +21,9 @@ int max = 640;
 
 int i = 0;
 
+int input_angle = 0;
+int readAlready = 0;
+
 void setup() {
   Serial.begin(9600);
   
@@ -81,11 +84,17 @@ void closeGripper() {
   delay(500);
 }
 
+void inputAngle() {
+  if (Serial.available() != 0 ) {
+    input_angle = Serial.parseInt();
+    if(input_angle == 0) {} 
+    else {
+        moveToAngle(0, input_angle);
+    }
+  }
+}
+
  
 void loop() { 
-  while(i == 0) {
-    openGripper();
-    closeGripper();
-    i++;
-  }
+  inputAngle();
 }

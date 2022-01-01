@@ -34,6 +34,10 @@ int max = 640;
 
 int i = 0;
 
+int origin_x = 0;
+int origin_y = 0;
+int origin_z = 0;
+
 // tracking (CAMERA SHOULD BE POINTING TO PERSON, NOT CEILING!)
 
 void setup() {
