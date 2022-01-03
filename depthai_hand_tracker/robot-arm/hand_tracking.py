@@ -30,15 +30,15 @@ def position(event):
     write_read(input)
 
     if -1 < rotation < -0.2:
-        write_read("rig")
+        write_read(",rig")
     elif 0.4 < rotation < 1.5:
-        write_read("lef")
+        write_read(",lef")
 
 def open(event):
-    write_read("ope")
+    write_read(",ope")
 
 def close(event):
-    write_read("clo")
+    write_read(".clo")
 
 config = {
     'renderer' : {'enable': True},
