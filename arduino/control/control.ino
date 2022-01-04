@@ -89,7 +89,8 @@ void inputAngle() {
     input_angle = Serial.parseInt();
     if(input_angle == 0) {} 
     else {
-        moveToAngle(0, input_angle);
+      moveToAngle(5, input_angle);
+//       moveShoulder(input_angle);
     }
   }
 }
