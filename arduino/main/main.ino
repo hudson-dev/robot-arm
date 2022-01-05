@@ -42,14 +42,14 @@ bool isWrist = false;
 // starting angles (Create angles (start, min, max, current) --> set starting angles --> create function)
 
 int shoulder_start_angle = 140;
-int elbow_start_angle = 180;
-int wrist_one_start_angle = 50;
+int elbow_start_angle = 150;
+int wrist_one_start_angle = 30;
 int wrist_two_start_angle = 68;
 
 // min & max angles
 
 int shoulder_min = 40; // up
-int shoulder_max = 130; // down
+int shoulder_max = 140; // down
 int current_shoulder_angle = 0;
 
 int elbow_min = 20; // back
@@ -64,7 +64,7 @@ int wrist_two_min = 0; // left
 int wrist_two_max = 180; // right
 int current_wrist_two_angle = 0;
 
-int gripper_min = 52; // close
+int gripper_min = 40; // close
 int gripper_max = 180; // open
 
 // origin
@@ -113,18 +113,25 @@ void setup() {
 
   // moving arm to starting position
   
-//  moveShoulder(shoulder_start_angle);
-//  current_shoulder_angle = shoulder_start_angle;
-//
-//  moveToAngle(2, elbow_start_angle);
-//  current_elbow_angle = elbow_start_angle;
-//  
-//  moveToAngle(3, wrist_one_start_angle);
-//  current_wrist_one_angle = wrist_one_start_angle;
-//
-//  moveToAngle(4, wrist_two_start_angle);
-//  current_wrist_two_angle = wrist_two_start_angle;
+  moveShoulder(shoulder_start_angle);
+  current_shoulder_angle = shoulder_start_angle;
 
+  delay(3000);
+
+  moveToAngle(2, elbow_start_angle);
+  current_elbow_angle = elbow_start_angle;
+
+  delay(1000);
+  
+  moveToAngle(3, wrist_one_start_angle);
+  current_wrist_one_angle = wrist_one_start_angle;
+
+  delay(1000);
+
+  moveToAngle(4, wrist_two_start_angle);
+  current_wrist_two_angle = wrist_two_start_angle;
+
+  delay(1000);
   moveToAngle(5, gripper_min);
 }
 
