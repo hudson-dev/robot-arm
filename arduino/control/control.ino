@@ -28,19 +28,24 @@ void setup() {
   Serial.begin(9600);
   
   pwm.begin();
-  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
+  pwm.setOscillatorFrequency(27000000);
+  pwm.setPWMFreq(50);  // Analog servos run at ~60 Hz updates
  
-  delay(10);
+  delay(3000);
   
 }
 
 void moveToAngle(uint8_t servoNumber, int angle) {
-  if(angle > 180) {
-    return;
-  }
+//  if(angle > 180) {
+//    return;
+//  }
+//
+//  int pulse = map(angle, 0, 180, min, max);
+//  pwm.setPWM(servoNumber, 0, pulse);
 
-  int pulse = map(angle, 0, 180, min, max);
-  pwm.setPWM(servoNumber, 0, pulse);
+  for (uint16_t pulselen = min; pulselen < max; pulselen++) {
+    pwm.setPWM(servoNumber, 0, pulselen);
+  }
 }
 
 void moveShoulder(int angle) {
@@ -89,8 +94,8 @@ void inputAngle() {
     input_angle = Serial.parseInt();
     if(input_angle == 0) {} 
     else {
-//      moveToAngle(2, input_angle);
-       moveShoulder(input_angle);
+      moveToAngle(15, input_angle);
+//       moveShoulder(input_angle);
     }
   }
 }

@@ -3,6 +3,14 @@
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
+// servos
+
+#define SERVOMIN  95 // This is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  460 // This is the 'maximum' pulse length count (out of 4096)
+#define USMIN  600 // This is the rounded 'minimum' microsecond length based on the minimum pulse of 150
+#define USMAX  2400 // This is the rounded 'maximum' microsecond length based on the maximum pulse of 600
+#define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
+
 // ports
 
 uint8_t shoulder_one = 0;
@@ -30,14 +38,16 @@ String trailing;
 
 // movement
 
-int min = 150;
-int max = 640;
+int min = 95;
+int max = 460;
 
 int circle_offset = 190;
 int up_offset = 280;
-int forward_backward_offset = 220;
+int forward_backward_offset = 180;
 
 bool isWrist = false;
+
+int angleChange = 1;
 
 // starting angles (Create angles (start, min, max, current) --> set starting angles --> create function)
 
@@ -107,32 +117,37 @@ void setup() {
   pinMode(dirPin, OUTPUT);
   
   pwm.begin();
-  pwm.setPWMFreq(60);  // Analog servos run at ~60 Hz updates
- 
+  pwm.setOscillatorFrequency(27000000);
+  pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~60 Hz updates
+  
   delay(10);
 
-  // moving arm to starting position
-  
+  startup();
+}
+
+void startup() {
   moveShoulder(shoulder_start_angle);
   current_shoulder_angle = shoulder_start_angle;
 
-  delay(3000);
-
-  moveToAngle(2, elbow_start_angle);
+  moveToAngle(2, 150);
   current_elbow_angle = elbow_start_angle;
-
-  delay(1000);
+  delay(500);
   
-  moveToAngle(3, wrist_one_start_angle);
+  moveToAngle(3, 30);
   current_wrist_one_angle = wrist_one_start_angle;
-
-  delay(1000);
-
-  moveToAngle(4, wrist_two_start_angle);
+  delay(500);
+  
+  moveToAngle(4, 68);
   current_wrist_two_angle = wrist_two_start_angle;
+  delay(500);
+  
+  moveToAngle(5, 180);
+  delay(500);
+}
 
-  delay(1000);
-  moveToAngle(5, gripper_min);
+void moveToAngle(int servoNumber, int angle) {
+  int pulselength = map(angle, 0, 180, SERVOMIN, SERVOMAX);
+  pwm.setPWM(servoNumber, 0, pulselength);
 }
 
 void printOnce(String statement) {
@@ -142,25 +157,14 @@ void printOnce(String statement) {
   }
 }
 
-void moveToAngle(uint8_t servoNumber, int angle) {
-  if(angle > 180) {
-    return;
-  }
-
-  int pulse = map(angle, 0, 180, min, max);
-  pwm.setPWM(servoNumber, 0, pulse);
-}
-
 void control(int input_angle, int min_angle, int max_angle, int servo_number, bool isShoulder) {
   if(isShoulder == false) {
     if(input_angle >= min_angle && input_angle <= max_angle) {
       moveToAngle(servo_number, input_angle);
-      delay(10);
     }
   } else {
     if(input_angle >= min_angle && input_angle <= max_angle) {
       moveShoulder(input_angle);
-      delay(700);
     }
   }
 }
@@ -174,13 +178,13 @@ void moveShoulder(int angle) {
 }
 
 void open() {
+  Serial.println("---------------OPEN---------------");
   moveToAngle(gripper, gripper_max);
-  delay(500);
 }
 
 void close() {
+  Serial.println("---------------CLOSE---------------");
   moveToAngle(gripper, gripper_min);
-  delay(500);
 }
 
 void spin(bool turnRight) {
@@ -205,48 +209,52 @@ void spin(bool turnRight) {
 
 void right() {
   Serial.println("RIGHT");
-  spin(true);
+//  spin(true);
 }
 
 void left() {
   Serial.println("LEFT");
-  spin(false);
+//  spin(false);
 }
 
 void up() {
   Serial.println("UP");
-  current_shoulder_angle = current_shoulder_angle - 30;
+  current_shoulder_angle = current_shoulder_angle - angleChange;
   control(current_shoulder_angle, shoulder_min, shoulder_max, 0, true);
 }
 
 void down() {
   Serial.println("DOWN");
-  current_shoulder_angle = current_shoulder_angle + 30;
+  current_shoulder_angle = current_shoulder_angle + angleChange;
   control(current_shoulder_angle, shoulder_min, shoulder_max, 0, true);
 }
 
 void forward() {
   Serial.println("FORWARD");
-  current_elbow_angle = current_elbow_angle + 30;
-  control(current_elbow_angle, elbow_min, elbow_max, 2, false);
+  current_elbow_angle = current_elbow_angle + angleChange;
+  control(current_elbow_angle, elbow_min, elbow_max, elbow, false);
+
+  // TODO: ADD IN WRIST ONE TO MAINTAIN LEVEL POSITION
 }
 
 void backward() {
   Serial.println("BACKWARD");
-  current_elbow_angle = current_elbow_angle - 30;
-  control(current_elbow_angle, elbow_min, elbow_max, 2, false);
+  current_elbow_angle = current_elbow_angle - angleChange;
+  control(current_elbow_angle, elbow_min, elbow_max, elbow, false);
+
+  // TODO: ADD IN WRIST ONE TO MAINTAIN LEVEL POSITION
 }
 
 void right_wrist() {
   Serial.println("RIGHT WRIST");
-  current_wrist_two_angle = current_wrist_two_angle + 30;
-  control(current_wrist_two_angle, wrist_two_min, wrist_two_max, 2, false);
+  current_wrist_two_angle = current_wrist_two_angle + angleChange;
+  control(current_wrist_two_angle, wrist_two_min, wrist_two_max, wrist_two, false);
 }
 
 void left_wrist() {
   Serial.println("LEFT WRIST");
-  current_wrist_two_angle = current_wrist_two_angle - 30;
-  control(current_wrist_two_angle, wrist_two_min, wrist_two_max, 2, false);
+  current_wrist_two_angle = current_wrist_two_angle - angleChange;
+  control(current_wrist_two_angle, wrist_two_min, wrist_two_max, wrist_two, false);
 }
 
 void position(int x, int y, int z, String trailing) {
@@ -282,7 +290,7 @@ void position(int x, int y, int z, String trailing) {
   }
 }
 
-void loop() { 
+void loop() {   
  while (!Serial.available()); // no data
 
  // data
@@ -338,7 +346,6 @@ void loop() {
   }
  } else {
    // START
-
     
    printOnce("---------------CALIBRATED!---------------");
    
@@ -347,8 +354,12 @@ void loop() {
     x = strtok(Buf, ",");
     y = strtok(NULL, ",");
     z = strtok(NULL, ",");
-    
+
     trailing = strtok(NULL, ",");
+
+//    Serial.println("x,y,z: " + String(x) + ", " + String(y) + ", " + String(z));
+//    Serial.println(String(input));
+//    Serial.println(String(trailing));
   
     position(x.toInt(),y.toInt(),z.toInt(), trailing);
   

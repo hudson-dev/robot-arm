@@ -3,7 +3,7 @@
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-uint8_t servo_num = 1;
+uint8_t servo_num = 15;
 
 int min = 150;
 int max = 640;
@@ -26,7 +26,8 @@ void moveToAngle(int angle) {
   }
 
   int pulse = map(angle, 0, 180, min, max);
-  pwm.setPWM(servo_num, 0, pulse);
+  int pulse_width = int(float(pulse) / 1000000 * 60 * 4096);
+  pwm.setPWM(servo_num, 0, pulse_width);
 
   delay(1000);
 }
@@ -76,5 +77,7 @@ void loop() {
 
 //  minToMax();
   moveToAngle(0);
+  delay(500);
   moveToAngle(180);
+  delay(500);
 }

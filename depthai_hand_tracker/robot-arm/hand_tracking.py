@@ -38,7 +38,7 @@ def open(event):
     write_read(",ope")
 
 def close(event):
-    write_read(".clo")
+    write_read(",clo")
 
 config = {
     'renderer' : {'enable': True},

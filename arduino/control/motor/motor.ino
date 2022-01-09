@@ -2,7 +2,7 @@
 const int dirPin = 2;
 const int stepPin = 3;
 const int stepsPerRevolution = 200;
-
+ 
 void setup()
 {
   // Declare pins as Outputs
