@@ -41,13 +41,17 @@ String trailing;
 int min = 95;
 int max = 460;
 
-int circle_offset = 190;
-int up_offset = 280;
+int circle_offset = 170;
+int up_offset = 200;
 int forward_backward_offset = 180;
+int right_left_offset = 50;
 
 bool isWrist = false;
 
 int angleChange = 1;
+
+bool alreadyRight = false;
+bool alreadyLeft = false;
 
 // starting angles (Create angles (start, min, max, current) --> set starting angles --> create function)
 
@@ -209,12 +213,20 @@ void spin(bool turnRight) {
 
 void right() {
   Serial.println("RIGHT");
-//  spin(true);
+  if(alreadyRight == false) {
+    spin(true);
+    alreadyRight = true;
+    alreadyLeft = false;
+  }
 }
 
 void left() {
   Serial.println("LEFT");
-//  spin(false);
+  if(alreadyLeft == false) {
+    spin(false);
+    alreadyLeft = true;
+    alreadyRight = false;
+  }
 }
 
 void up() {
@@ -266,10 +278,10 @@ void position(int x, int y, int z, String trailing) {
   }
   
   // x movement
-  if(x > origin_x + circle_offset && isWrist == false) {
+  if(x > origin_x + right_left_offset && isWrist == false) {
     left(); // motor
   }
-  if(x < origin_x - circle_offset && isWrist == false) {    
+  if(x < origin_x - right_left_offset && isWrist == false) {    
     right(); // motor
   }
   
