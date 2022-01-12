@@ -5,7 +5,7 @@ import time
 
 # communicaiton w/ arduino
 
-arduino = serial.Serial(port='/dev/cu.usbmodem1101', baudrate=2000000, timeout=.1)
+arduino = serial.Serial(port='/dev/cu.usbmodem101', baudrate=2000000, timeout=.1)
 
 def write_read(x):
     arduino.write(bytes(x, 'utf-8'))

@@ -42,9 +42,9 @@ int min = 95;
 int max = 460;
 
 int circle_offset = 170;
-int up_offset = 200;
+int up_offset = 130;
 int forward_backward_offset = 180;
-int right_left_offset = 50;
+int right_left_offset = 130;
 
 bool isWrist = false;
 
@@ -130,28 +130,34 @@ void setup() {
 }
 
 void startup() {
-  moveShoulder(shoulder_start_angle);
-  current_shoulder_angle = shoulder_start_angle;
+  moveShoulder(0);
+  current_shoulder_angle = 0;
+  delay(1000);
 
-  moveToAngle(2, 150);
-  current_elbow_angle = elbow_start_angle;
+  moveToAngle(2, 40); // 150
+  current_elbow_angle = 40;
   delay(500);
   
-  moveToAngle(3, 30);
+  moveToAngle(3, 140);
   current_wrist_one_angle = wrist_one_start_angle;
   delay(500);
   
-  moveToAngle(4, 68);
+  moveToAngle(4, 82);
   current_wrist_two_angle = wrist_two_start_angle;
   delay(500);
   
-  moveToAngle(5, 180);
+  moveToAngle(5, 160);
   delay(500);
 }
 
 void moveToAngle(int servoNumber, int angle) {
-  int pulselength = map(angle, 0, 180, SERVOMIN, SERVOMAX);
-  pwm.setPWM(servoNumber, 0, pulselength);
+
+  if(angle > 180 || angle < 0) {
+    return;
+  } else {
+    int pulselength = map(angle, 0, 180, SERVOMIN, SERVOMAX);
+    pwm.setPWM(servoNumber, 0, pulselength);
+  }
 }
 
 void printOnce(String statement) {

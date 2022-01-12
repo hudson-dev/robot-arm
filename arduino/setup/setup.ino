@@ -30,13 +30,20 @@ void setup() {
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
 
-  delay(1000);
-  
-  moveToAngle(2, 150);
-  moveToAngle(3, 30);
-  moveToAngle(4, 68);
-  moveToAngle(5, 40);  
+//  moveShoulder(140);
+//  delay(1000);
 
+//  moveToAngle(2, 150); // 150
+//  delay(500);
+//  
+//  moveToAngle(3, 30);
+//  delay(500);
+//  
+//  moveToAngle(4, 68);
+//  delay(500);
+//  
+//  moveToAngle(5, 180);
+//  delay(500);
 }
 
 void moveToAngle(uint8_t servoNumber, int angle) {
@@ -48,6 +55,14 @@ void moveToAngle(uint8_t servoNumber, int angle) {
 //  pwm.setPWM(servoNumber, 0, 0 ); // freeing servo
 }
 
+void moveShoulder(int angle) {
+    int angle_one = 180-angle;
+    int angle_two = 0+angle;
+  
+    moveToAngle(0, angle_one);
+    moveToAngle(1, angle_two);
+}
+
 void calibrate(int servoNumber, int pulse) {
   pwm.setPWM(servoNumber, 0, pulse);
 
@@ -55,7 +70,22 @@ void calibrate(int servoNumber, int pulse) {
 }
 
 void loop() {
-  moveToAngle(15, 0);
-  moveToAngle(15, 180);
+  moveShoulder(0);
+  delay(1000);
 
+  moveShoulder(90);
+  delay(1000);
+
+
+//  moveToAngle(2, 40); // 150
+//  delay(500);
+//
+//  moveToAngle(3, 140); // 150
+//  delay(500);
+//
+//  moveToAngle(4, 82);
+//  delay(500);
+//
+//  moveToAngle(5, 160);
+//  delay(500);
 }
